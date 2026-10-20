@@ -18,7 +18,6 @@ THETA = 0.001
 
 
 def transitions(s, a, p):
-    """Бірдей нәтижелердің ықтималдықтары біріктіріледі."""
     if s in TERMINALS:
         return [(1.0, s, 0.0)]
     side = (1.0 - p["p_main"]) / 2
