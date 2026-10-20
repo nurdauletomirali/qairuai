@@ -40,7 +40,6 @@ def q_value(s, a, values, p):
 
 
 def value_iteration(p, theta=THETA):
-    """Жаңарту тек алдыңғы итерацияның мәндерін пайдаланады."""
     values = {s: 0.0 for s in STATES}
     history = [values.copy()]
     for iteration in range(1, 10001):
