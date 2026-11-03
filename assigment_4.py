@@ -1,3 +1,62 @@
+import json
+import platform
+import numpy as np
+import sklearn
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import (accuracy_score, precision_score,
+                            recall_score, f1_score, confusion_matrix)
+
+DATA = [[1.0, 0.2, 0.1, 0.8, 0.1, 1.0],
+ [2.0, 0.3, 0.2, 0.7, 0.2, 1.0],
+ [3.0, 0.4, 0.15, 0.9, 0.15, 1.0],
+ [4.0, 0.5, 0.3, 0.8, 0.1, 1.0],
+ [5.0, 0.6, 0.25, 0.75, 0.2, 1.0],
+ [6.0, 0.7, 0.35, 0.85, 0.1, 1.0],
+ [7.0, 0.8, 0.4, 0.9, 0.15, 1.0],
+ [8.0, 0.25, 0.5, 0.7, 0.4, 1.0],
+ [9.0, 0.35, 0.45, 0.8, 0.35, 1.0],
+ [10.0, 0.45, 0.55, 0.75, 0.45, 1.0],
+ [11.0, 0.55, 0.5, 0.85, 0.3, 1.0],
+ [12.0, 0.65, 0.6, 0.8, 0.4, 1.0],
+ [13.0, 0.2, 0.8, 0.4, 0.75, 0.0],
+ [14.0, 0.3, 0.7, 0.35, 0.8, 0.0],
+ [15.0, 0.4, 0.85, 0.45, 0.7, 0.0],
+ [16.0, 0.5, 0.75, 0.3, 0.85, 0.0],
+ [17.0, 0.6, 0.9, 0.4, 0.8, 0.0],
+ [18.0, 0.7, 0.8, 0.35, 0.9, 0.0],
+ [19.0, 0.8, 0.85, 0.45, 0.75, 0.0],
+ [20.0, 0.9, 0.7, 0.3, 0.85, 0.0],
+ [21.0, 0.25, 0.9, 0.5, 0.8, 0.0],
+ [22.0, 0.45, 0.95, 0.4, 0.9, 0.0],
+ [23.0, 0.65, 0.85, 0.3, 0.95, 0.0],
+ [24.0, 0.85, 0.9, 0.35, 0.85, 0.0]]
+
+def run():
+    data = np.array(DATA, dtype=float)
+    ids = data[:, 0].astype(int)
+    X, y = data[:, 1:5], data[:, 5].astype(int)
+    X_train, X_test = X[:18], X[18:]
+    y_train, y_test = y[:18], y[18:]
+    models = {
+        'DecisionTree': DecisionTreeClassifier(max_depth=2, random_state=42),
+        'LogisticRegression': make_pipeline(
+            StandardScaler(),
+            LogisticRegression(C=1.0, solver='lbfgs', max_iter=5000,
+                               random_state=42)),
+    }
+    # Өзгеретін жалғыз гиперпараметр: жасырын қабат нейрондарының саны.
+    for width in (4, 8, 16):
+        models[f'MLP_{width}'] = make_pipeline(
+            StandardScaler(), MLPClassifier(
+                hidden_layer_sizes=(width,), activation='relu',
+                solver='lbfgs', alpha=0.0001, max_iter=5000,
+                tol=0.0001, random_state=42))
+    results = {}
+    for name, model in models.items()
         model.fit(X_train, y_train)
         prediction = model.predict(X_test)
         results[name] = {
@@ -54,3 +113,4 @@
 
 if __name__ == '__main__':
     run()
+
